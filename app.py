@@ -141,10 +141,11 @@ def report_taker(body, ack, respond, client, logger):
 @app.view("scrum_invoke")
 def view_submission(ack, body, client, logger):
     ack()
-    logger.info(body["view"]["state"]["values"])
-    print(body["user"])
-    print("\n\n")
-    print(body["view"]["state"]["values"])
+    # logger.info(body["view"]["state"]["values"])
+    # print(body["user"])
+    # print("\n\n")
+    # print(body["view"]["state"]["values"])
+    print(body)
 
 
 # Start your app
