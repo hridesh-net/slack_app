@@ -278,18 +278,18 @@ def view_submission(ack, body, client, logger):
     
     user_name = body['user']['name']
     
-    present_date = date.today()
+    submission_date = date.today()
     
     # data to send at back-end
     data_rec = {
-        'date': present_date,
+        'date': submission_date,
         'team_id': team_id,
         'user_id': user_id,
         'user_name': user_name,
-        'user_response': {
+        submission_date: {
             'name': name,
             'yesterday': y,
-            present_date: t,
+            submission_date: t,
             'blocker': blocker
         }
     }
