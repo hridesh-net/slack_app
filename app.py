@@ -282,9 +282,9 @@ def view_submission(ack, body, client, logger):
     
     # data to send at back-end
     data_rec = {
-        'date': submission_date,
-        'team_id': team_id,
+        'submission_date': submission_date,
         'user_id': user_id,
+        'team_id': team_id,
         'user_name': user_name,
         submission_date: {
             'name': name,
