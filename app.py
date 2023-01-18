@@ -1,9 +1,14 @@
 import os, logging
 import boto3
 from datetime import date
-import DataBase.WriteData as WriteData
+import DataBase.DynamoData as DynamoData
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+
+## initializing dynamodata #####
+update_data = DynamoData.DynamoData()
+
+
 # from dotenv import load_dotenv
 #
 # load_dotenv()
@@ -141,6 +146,7 @@ def action_button_click(body, ack, say, client, logger):
 def report_taker(body, ack, respond, client, logger):
     logger.info(body)
     ack()
+    # print(respond)
     # print(respond)
 
     res = client.views_open(
@@ -299,11 +305,89 @@ def view_submission(ack, body, client, logger):
     }
     
     print("Sending Data")
-    send_Data = WriteData.WriteData()
-    send_Data.add_updates(data_rec)
+    
+    update_data.add_updates(data_rec)
     print("data send successful")
     
-    print(data_rec)
+    # print(data_rec)
+
+@app.command("/know_me")
+def get_updates(body, ack, say, logger):
+    logger.info(body)
+    ack()
+    # print(body)
+    
+    date = body['text']
+    user_id = body['user_id']
+    
+    key = {
+        'submission_date': date,
+        'user_id': user_id
+    }
+    # update_data.get_data(key)
+    rec_data = update_data.get_data(key)
+    print(rec_data)
+    
+    say(
+	    blocks = [
+    		{
+    			"type": "section",
+    			"text": {
+    				"type": "mrkdwn",
+    				"text": "Hello, your updates are.*"
+    			}
+    		},
+    		{
+    			"type": "divider"
+    		},
+    		{
+    			"type": "section",
+    			"text": {
+    				"type": "plain_text",
+    				"text": "Yesterday updates are:",
+    				"emoji": True
+    			}
+    		},
+    		{
+    			"type": "section",
+    			"text": {
+				    "type": "mrkdwn",
+				    "text": rec_data[date]['yesterday']
+			    }
+		    },
+		    {
+		    	"type": "section",
+	    		"text": {
+			    	"type": "plain_text",
+			    	"text": "Today's updates are:",
+			    	"emoji": True
+		    	}
+	    	},
+		    {
+			    "type": "section",
+			    "text": {
+				    "type": "mrkdwn",
+				    "text": rec_data[date][date]
+			    }
+		    },
+		    {
+			    "type": "section",
+			    "text": {
+				    "type": "plain_text",
+				    "text": "Blockers:",
+				    "emoji": True
+			    }
+		    },
+	    	{
+			    "type": "section",
+			    "text": {
+				    "type": "mrkdwn",
+			    	"text": rec_data[date]['blocker']
+		    	}
+	    	}
+    	],
+        text=f"These are your updates"
+    )
 
 
 # Start your app
