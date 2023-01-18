@@ -1,8 +1,9 @@
+.env
+
 /.idea
 
 ######## Environment #######
-.env
-
+*.env
 /__pycache__
 
 ####### virtual Environment ######
