@@ -1,4 +1,5 @@
 import os, logging
+import boto3
 from datetime import date
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
@@ -279,6 +280,8 @@ def view_submission(ack, body, client, logger):
     user_name = body['user']['name']
     
     submission_date = date.today()
+
+    submission_date = str(submission_date)
     
     # data to send at back-end
     data_rec = {

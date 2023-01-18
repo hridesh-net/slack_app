@@ -47,19 +47,21 @@ Date = date.today()
 
 Date = str(Date)
 
-table.put_item(
-    Item = {
-        'submission_date': Date,
-        'team_id': 'T04F75F9SKV', 
-        'user_id': 'U04FX011280', 
-        'user_name': 'hridesh.khandal', 
-        Date: {
-            'name': 'testing data 101', 
-            'yesterday': 'testing yesterday', 
-            Date: 'testing today',
-            'blocker': 'testing blocker'
-        }
+data = {
+    'submission_date': '2023-01-10',
+    'user_id': 'U04J9N38MMF',
+    'team_id': 'T04F75F9SKV',
+    'user_name': 'lokendersinghshekhawa',
+    '2023-01-10': {
+        'name': 'lokender',
+        'yesterday': 'done 2 coding questions',
+        '2023-01-10': 'will be studying for tomorrow iot exam',
+        'blocker': 'null'
     }
+}
+
+table.put_item(
+    Item = data
 )
 
 print('data sent to dynamodb')

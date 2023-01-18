@@ -1,12 +1,15 @@
+import boto3
+
 class EmpUpdates:
     """Encapsulates an Amazon DynamoDB table of employees daily update data
     """
+    dynamodb = boto3.resource('dynamodb')
     
     def __init__(self) -> None:
         """:param dyn_resource: A Boto3 DynamoDB resource
         """
         self.dyn_resource = dyn_resource
-        self.table = None
+        self.table = self.dynamodb.Table('empUpdates')
     
     def create_table(self, table_name):
         """
