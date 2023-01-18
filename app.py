@@ -4,20 +4,19 @@ from datetime import date
 import DataBase.DynamoData as DynamoData
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from dotenv import load_dotenv
 
 ## initializing dynamodata #####
 update_data = DynamoData.DynamoData()
 
 
-# from dotenv import load_dotenv
-#
-# load_dotenv()
-# SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
-# SLACK_APP_TOKEN = os.environ['SLACK_APP_TOKEN']
+load_dotenv()
+SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
+SLACK_APP_TOKEN = os.environ['SLACK_APP_TOKEN']
 
 slack_app_token = 'xapp-1-A04FH0VLC84-4516027161495-b6a13d5b9509bbb2c7211631f08e059a1d07f84f980451c548e9ef227594429f'
 # Initializes your app with your bot token and socket mode handler
-app = App(token='xoxb-4517185332675-4524600647986-cr65m8SnFFpkVscOoB3yhZAn')
+app = App(token=SLACK_BOT_TOKEN)
 
 
 def log_request(logger, body, next):
@@ -139,7 +138,6 @@ def action_button_click(body, ack, say, client, logger):
         }
     )
     logger.info(res)
-
 
 
 @app.command("/scrum_bot")
@@ -271,25 +269,25 @@ def view_submission(ack, body, client, logger):
 
             elif (i['label']['text'] == "Blocker"):
                 blocker_id = i['block_id']
-    
+
     name = body['view']['state']['values'][name_id]['plain_text_input-action']['value']
-    
+
     y = body['view']['state']['values'][y_id]['plain_text_input-action']['value']
 
     t = body['view']['state']['values'][t_id]['plain_text_input-action']['value']
 
     blocker = body['view']['state']['values'][blocker_id]['plain_text_input-action']['value']
-    
+
     team_id = body['team']['id']
-    
+
     user_id = body['user']['id']
-    
+
     user_name = body['user']['name']
-    
+
     submission_date = date.today()
 
     submission_date = str(submission_date)
-    
+
     # data to send at back-end
     data_rec = {
         'submission_date': submission_date,
@@ -303,23 +301,24 @@ def view_submission(ack, body, client, logger):
             'blocker': blocker
         }
     }
-    
+
     print("Sending Data")
-    
+
     update_data.add_updates(data_rec)
     print("data send successful")
-    
+
     # print(data_rec)
+
 
 @app.command("/know_me")
 def get_updates(body, ack, say, logger):
     logger.info(body)
     ack()
     # print(body)
-    
+
     date = body['text']
     user_id = body['user_id']
-    
+
     key = {
         'submission_date': date,
         'user_id': user_id
@@ -327,69 +326,69 @@ def get_updates(body, ack, say, logger):
     # update_data.get_data(key)
     rec_data = update_data.get_data(key)
     print(rec_data)
-    
+
     say(
-	    blocks = [
-    		{
-    			"type": "section",
-    			"text": {
-    				"type": "mrkdwn",
-    				"text": "Hello, your updates are.*"
-    			}
-    		},
-    		{
-    			"type": "divider"
-    		},
-    		{
-    			"type": "section",
-    			"text": {
-    				"type": "plain_text",
-    				"text": "Yesterday updates are:",
-    				"emoji": True
-    			}
-    		},
-    		{
-    			"type": "section",
-    			"text": {
-				    "type": "mrkdwn",
-				    "text": rec_data[date]['yesterday']
-			    }
-		    },
-		    {
-		    	"type": "section",
-	    		"text": {
-			    	"type": "plain_text",
-			    	"text": "Today's updates are:",
-			    	"emoji": True
-		    	}
-	    	},
-		    {
-			    "type": "section",
-			    "text": {
-				    "type": "mrkdwn",
-				    "text": rec_data[date][date]
-			    }
-		    },
-		    {
-			    "type": "section",
-			    "text": {
-				    "type": "plain_text",
-				    "text": "Blockers:",
-				    "emoji": True
-			    }
-		    },
-	    	{
-			    "type": "section",
-			    "text": {
-				    "type": "mrkdwn",
-			    	"text": rec_data[date]['blocker']
-		    	}
-	    	}
-    	],
+        blocks=[
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Hello, your updates are.*"
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Yesterday updates are:",
+                    "emoji": True
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": rec_data[date]['yesterday']
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Today's updates are:",
+                    "emoji": True
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": rec_data[date][date]
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Blockers:",
+                    "emoji": True
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": rec_data[date]['blocker']
+                }
+            }
+        ],
         text=f"These are your updates"
     )
 
 
 # Start your app
 if __name__ == "__main__":
-    SocketModeHandler(app, slack_app_token).start()
+    SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN")).start()
