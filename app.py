@@ -1,6 +1,7 @@
 import os, logging
 import boto3
 from datetime import date
+import DataBase.WriteData as WriteData
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 # from dotenv import load_dotenv
@@ -296,6 +297,11 @@ def view_submission(ack, body, client, logger):
             'blocker': blocker
         }
     }
+    
+    print("Sending Data")
+    send_Data = WriteData.WriteData()
+    send_Data.add_updates(data_rec)
+    print("data send successful")
     
     print(data_rec)
 
