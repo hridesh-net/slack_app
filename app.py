@@ -1,20 +1,25 @@
 import os, logging
 import boto3
+import schedule
+import time
+import datetime
 from datetime import date
 import DataBase.DynamoData as DynamoData
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+
 from dotenv import load_dotenv
 
 ## initializing dynamodata #####
 update_data = DynamoData.DynamoData()
 
-
+# Loading Environment variables
 load_dotenv()
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
 SLACK_APP_TOKEN = os.environ['SLACK_APP_TOKEN']
 
-slack_app_token = 'xapp-1-A04FH0VLC84-4516027161495-b6a13d5b9509bbb2c7211631f08e059a1d07f84f980451c548e9ef227594429f'
 # Initializes your app with your bot token and socket mode handler
 app = App(token=SLACK_BOT_TOKEN)
 
@@ -255,19 +260,19 @@ def view_submission(ack, body, client, logger):
     # To take the block/fields IDs
     for i in body['view']['blocks']:
 
-        if (i['type'] == 'input'):
+        if i['type'] == 'input':
 
-            if (i['label']['text'] == 'Name'):
+            if i['label']['text'] == 'Name':
 
                 name_id = i['block_id']
 
-            elif (i['label']['text'] == "Yesterday's update"):
+            elif i['label']['text'] == "Yesterday's update":
                 y_id = i['block_id']
 
-            elif (i['label']['text'] == "Today's Task"):
+            elif i['label']['text'] == "Today's Task":
                 t_id = i['block_id']
 
-            elif (i['label']['text'] == "Blocker"):
+            elif i['label']['text'] == "Blocker":
                 blocker_id = i['block_id']
 
     name = body['view']['state']['values'][name_id]['plain_text_input-action']['value']
@@ -392,3 +397,22 @@ def get_updates(body, ack, say, logger):
 # Start your app
 if __name__ == "__main__":
     SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN")).start()
+
+
+    def send_message():
+        client = WebClient(token=SLACK_BOT_TOKEN)
+        try:
+            # Call the chat.postMessage method using the WebClient
+            response = client.chat_postMessage(
+                channel="C04F79UN4RY",
+                text="Hello world!")
+            print(response)
+        except SlackApiError as e:
+            print("Error sending message: {}".format(e))
+
+
+    schedule.every().day.at("04:22").do(send_message)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

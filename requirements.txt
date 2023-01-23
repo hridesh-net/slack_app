@@ -2,3 +2,5 @@ slack_sdk>=3.0
 slack_bolt>=1.6.1
 certifi
 boto3==1.26.51
+schedule~=1.1.0
+python-dotenv~=0.21.0
