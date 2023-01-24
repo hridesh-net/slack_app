@@ -23,7 +23,7 @@ def send_message():
         print("Error sending message: {}".format(e))
 
 
-schedule.every().day.at("06:35").do(send_message)
+schedule.every().day.at("18:36").do(send_message)
 
 while True:
     schedule.run_pending()

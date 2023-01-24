@@ -399,20 +399,20 @@ if __name__ == "__main__":
     SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN")).start()
 
 
-    def send_message():
-        client = WebClient(token=SLACK_BOT_TOKEN)
-        try:
-            # Call the chat.postMessage method using the WebClient
-            response = client.chat_postMessage(
-                channel="C04F79UN4RY",
-                text="Hello world!")
-            print(response)
-        except SlackApiError as e:
-            print("Error sending message: {}".format(e))
-
-
-    schedule.every().day.at("04:22").do(send_message)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    # def send_message():
+    #     client = WebClient(token=SLACK_BOT_TOKEN)
+    #     try:
+    #         # Call the chat.postMessage method using the WebClient
+    #         response = client.chat_postMessage(
+    #             channel="C04F79UN4RY",
+    #             text="Hello world!")
+    #         print(response)
+    #     except SlackApiError as e:
+    #         print("Error sending message: {}".format(e))
+    #
+    #
+    # schedule.every().day.at("04:22").do(send_message)
+    #
+    # while True:
+    #     schedule.run_pending()
+    #     time.sleep(1)
